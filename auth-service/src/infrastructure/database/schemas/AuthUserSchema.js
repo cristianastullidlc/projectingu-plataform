@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
-import { AuthUser } from "../../../models/entities/AuthUser";
-import { Role } from "../../../models/enums/Role";
+import { Role } from "../../../models/enums/Role.js";
 
 const AuthUserSchema = new mongoose.Schema(
     {
@@ -9,7 +8,7 @@ const AuthUserSchema = new mongoose.Schema(
             required: true, 
             unique: true,
             index: true,
-            low,ercase: true,
+            lowercase: true,
             trim: true
         },
         role: { type: String, enum: Object.values(Role), required: true },

@@ -1,5 +1,6 @@
 import InvalidCredentialsError from "../errors/InvalidCredentialsError.js"
 import AuthProviderFactory from "../models/entities/AuthProviderFactory.js"
+import {AuthUser} from "../models/entities/AuthUser.js";
 
 export class AuthService {
     constructor(userRepository, tokenService) {
@@ -11,7 +12,7 @@ export class AuthService {
         const user = await this.userRepository.findByEmail(email);
 
         if(!user) {
-            throw new UserNotFoundError(email);
+            throw new InvalidCredentialsError();
         }
 
         const provider = AuthProviderFactory.create(user.provider);
@@ -30,30 +31,40 @@ export class AuthService {
 
         const token = this.tokenService.generate(user);
 
-        return {accessToken: token};
+        return {accessToken: token,
+            user: {
+                id: user.id,
+                email: user.email,
+                role: user.role
+            }
+        };
     }
 
-    async registerLocal(email, password, role) {
+    async register(email, password, role, providerType = "LOCAL", providerId = null) {
 
-        const existing = await this.userRepository.findByEmail(email);
+    const existing = await this.userRepository.findByEmail(email);
 
-        if (existing) {
-            throw new EmailAlreadyExistsError(email);
-        }
+    const provider = AuthProviderFactory.create(providerType);
 
-        const credentials = {email, password};
+    const credentials = { email, password, providerId };
 
-        const providerData = await provider.register(credentials);
+    const providerData = await provider.register(credentials);
 
-        const user = new AuthUser(
-            null,
-            email,
-            role,
-            providerData.provider,
-            providerData.password,
-            providerData.providerId
-        );
+    const user = new AuthUser(
+        null,
+        email,
+        role,
+        providerData.provider,
+        providerData.password,
+        providerData.providerId
+    );
 
-        return await this.userRepository.create(user);
-    }
+    const savedUser = await this.userRepository.create(user);
+
+    return {
+        id: savedUser.id,
+        email: savedUser.email,
+        role: savedUser.role
+    };
+}
 }

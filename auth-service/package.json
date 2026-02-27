@@ -1,22 +1,28 @@
 {
   "name": "auth-service",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "Authentication microservice with JWT and provider strategy pattern",
+  "type": "module",
+  "main": "src/app.js",
   "scripts": {
-    "start:backend": "npm start --workspace=backend",
-    "dev:backend": "npm run dev --workspace=backend",
-    "start:frontend": "npm start --workspace=frontend",
-    "start:dev": "concurrently \"npm run dev:backend\" \"npm run start:frontend\"",
+    "dev": "nodemon src/app.js",
+    "start": "node src/app.js",
     "lint": "eslint .",
     "format": "prettier . --write",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest packages/backend"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
   },
-  "keywords": [],
+  "keywords": [
+    "auth",
+    "jwt",
+    "microservice",
+    "express",
+    "mongodb"
+  ],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",

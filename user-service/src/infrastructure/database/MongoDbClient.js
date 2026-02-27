@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import "dotenv/config";
+
 export class MongoDbClient {
     static async connect() {
         try {
