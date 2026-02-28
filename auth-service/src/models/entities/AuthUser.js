@@ -3,7 +3,7 @@ import { Role } from "../enums/Role.js";
 export class AuthUser {
 
     constructor(
-        _id,
+        id,
         email,
         role,
         provider,
@@ -38,7 +38,7 @@ export class AuthUser {
             throw new Error("AuthUser: either password or providerId must be provided");
         }
 
-        this._id = _id;
+        this.id = id;
         this.email = email;
         this.role = role;
         this.provider = provider;

@@ -1,6 +1,8 @@
 import { AuthUserMapper } from "../../utils/AuthUserMapper.js";
+import {RepositoryError } from "../../errors/RepositoryError.js";
+import { EmailAlreadyExistsError } from "../../errors/EmailAlreadyExistsError.js";
 
-class AuthUserRepository {
+export class AuthUserRepository {
     constructor(model) {
         this.model = model;
     }
@@ -40,14 +42,14 @@ class AuthUserRepository {
 
     async update(authUser) {
         try {
-            if (!authUser._id) {
+            if (!authUser.id) {
                 throw new Error("AuthUser must have an id to be updated");
             }
 
             const persistence = AuthUserMapper.toPersistence(authUser);
 
             const updated = await this.model.findByIdAndUpdate(
-                authUser._id,
+                authUser.id,
                 persistence,
                 { new: true }
                 ).lean();

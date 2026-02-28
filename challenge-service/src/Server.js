@@ -1,19 +1,14 @@
-import express from "express";
-import cors from "cors";
-import { authErrorMiddleware } from "./middlewares/AuthMiddleware.js";
 
 export class Server {
-
     constructor(port) {
-        this._app = express();
         this._port = port;
+        this._app = express();
         this._routes = [];
         this._controllers = new Map();
 
         this._configureBaseMiddlewares();
     }
 
-    // 🔹 Getter público (solo lectura)
     get app() {
         return this._app;
     }
@@ -22,7 +17,6 @@ export class Server {
         return this._port;
     }
 
-    // 🔹 Configuración base interna
     _configureBaseMiddlewares() {
         this._app.use(express.json());
         this._app.use(express.urlencoded({ extended: true }));
@@ -38,7 +32,6 @@ export class Server {
         );
     }
 
-    // 🔹 Inyección de dependencias
     setController(controllerClass, controller) {
         this._controllers.set(controllerClass.name, controller);
     }
@@ -60,12 +53,13 @@ export class Server {
             this._app.use(routeFactory(this.getController.bind(this)));
         });
 
-        this._app.use(authErrorMiddleware);
+        this._app.use(challengeErrorMiddleware);
     }
 
     launch() {
-    return this._app.listen(this._port, () => {
-            console.log(`🚀 Server running on port ${this._port}`);
+        return this._app.listen(this._port, () => {
+            console.log(`Server running on port ${this._port}`);
         });
     }
-} 
+
+}
