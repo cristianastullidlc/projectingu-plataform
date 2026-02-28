@@ -1,18 +1,16 @@
 import express from "express";
 import { Router } from "express";
-import UserController from "../controllers/UserController";
-import { verifyTokenMiddleware } from "../middlewares/VerifyTokenMiddleware";
-import { authorizeRoles } from "../middlewares/authorizeRoles";
-import tokenService from "../services/tokenService.js";
+import UserController from "../controllers/UserController.js";
+import { authorizeRoles } from "../middlewares/authorizeRoles.js";
 
 const basePath = "/user";
 
-export default function userRoutes(getController) {
+export default function userRoutes(getController, authMiddleware) {
     const router = Router();
 
     router.use(
         basePath,
-        verifyTokenMiddleware(tokenService)
+        authMiddleware
     );
 
     router.get( 
@@ -65,7 +63,6 @@ export default function userRoutes(getController) {
 
     router.get(
         `${basePath}/:userId`,
-        verifyTokenMiddleware(tokenService),
         authorizeRoles("admin"),
         async(req, res, next) => {
             try {

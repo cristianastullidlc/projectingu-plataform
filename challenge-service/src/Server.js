@@ -1,7 +1,3 @@
-import express from "express";
-import cors from "cors";
-import { userErrorMiddleware } from "./middlewares/UserErrorMiddleware.js";
-
 
 export class Server {
     constructor(port) {
@@ -57,7 +53,7 @@ export class Server {
             this._app.use(routeFactory(this.getController.bind(this)));
         });
 
-        this._app.use(userErrorMiddleware);
+        this._app.use(challengeErrorMiddleware);
     }
 
     launch() {

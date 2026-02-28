@@ -1,32 +1,41 @@
-import { Mongoose } from "mongoose";
+import mongoose from "mongoose";
+import { Roles } from "../../models/enums/Roles.js";
 
-const userSchema = new Mongoose.Schema(
+const userSchema = new mongoose.Schema(
     {
-        name: {
-        type: 'string',
-        required: true,
-    },
-    lastName: {
-        type: 'string',
-        required: true,
-    },
-    identification: {
-        type: 'string',
-        required: true,
-        max: 20,
-    },
-    email: {
-        type: 'string',
+        userId: {
+        type: String,
         required: true,
         unique: true,
-        lowercase: true,
-        trim: true,
-    },
-    role: {
-        type: 'string', 
-        enum: Object.values(Role),
+        index: true
+        },
+        name: {
+        type: String,
         required: true,
-    },
+        },
+        lastName: {
+            type: String,
+            required: true,
+        },
+        identification: {
+            type: String,
+            required: true,
+            max: 20,
+        },
+        email: {
+            type: String,
+            required: true,
+            lowercase: true,
+            trim: true,
+        },
+        role: {
+            type: String, 
+            enum: Object.values(Roles),
+            required: true,
+        },
+        authProvider: {
+        type: String
+        }
     },
     {
         timestamps: true,
@@ -36,4 +45,4 @@ const userSchema = new Mongoose.Schema(
 
 
 
-export const UserModel = Mongoose.model("User", userSchema);
+export const UserModel = mongoose.model("User", userSchema);

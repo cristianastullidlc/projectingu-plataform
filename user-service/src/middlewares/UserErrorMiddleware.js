@@ -1,5 +1,5 @@
-import { UserNotFoundError } from "../errors/UserNotFoundError.js";
-import { IdentificationAlreadyExistsError } from "../errors/IdentificationAlreadyExistsError.js";
+import UserNotFoundError from "../errors/UserNotFoundError.js";
+import {IdentificationAlreadyExistsError} from "../errors/IdentificationAlreadyExistsError.js";
 
 export const userErrorMiddleware = (err, req, res, next) => {
     console.error("Error in user routes:", err);

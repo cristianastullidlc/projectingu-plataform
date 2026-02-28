@@ -5,10 +5,12 @@ export default class UserController {
     }
 
     async createUser(req, res) {
-        const { name, lastName, identification, email } = req.body;
+        const { name, lastName, identification } = req.body;
 
-        const userId = req.user.id;
+        const userId = req.user.userId;
         const role = req.user.role;
+        const providerId = req.user.providerId;
+        const email = req.user.email;
 
         try{
             const user = await this.userService.createUser({
@@ -17,7 +19,8 @@ export default class UserController {
                 lastName,
                 identification,
                 email,
-                role
+                role,
+                providerId
             });
             res.status(201).json(user);
         } catch (error) {
@@ -26,9 +29,9 @@ export default class UserController {
     }
 
     async getUser(req, res) {
-        const userId = req.user.id;
+        const userId = req.user.userId;
         try {
-            const user = await this.userService.getProfileByUserId(userId);
+            const user = await this.userService.getUserByUserId(userId);
             if (!user) {
                 return res.status(404).json({ error: "User not found" });
             }
@@ -39,7 +42,7 @@ export default class UserController {
     }
 
     async deleteUser(req, res) {
-        const userId = req.user.id;
+        const userId = req.user.userId;
         try {
             await this.userService.deleteUser(userId);
             res.status(204).send();
@@ -49,18 +52,16 @@ export default class UserController {
     }
 
     async updateUser(req, res) {
-        const userId = req.user.id;
-        const { name, lastName, identification, email} = req.body;
-        
+        const userId = req.user.userId;
+        const { name, lastName} = req.body;
+
+
         try {            
             const user = await this.userService.updateUser(
                 userId,
                 {name,
                 lastName,
-                identification,
-                email
-                }
-            );
+                });
 
             res.status(200).json(user);
         } catch (error) {
@@ -72,7 +73,7 @@ export default class UserController {
     async getUserById(req, res) {
         const { userId } = req.params;
         try {
-            const user = await this.userService.getProfileByUserId(userId);
+            const user = await this.userService.getUserByUserId(userId);
             if (!user) {
                 return res.status(404).json({ error: "User not found" });
             }
@@ -81,5 +82,5 @@ export default class UserController {
             res.status(400).json({ error: error.message });
         }
     }
-
+    
 }

@@ -1,40 +1,46 @@
 import { RepositoryError } from "../../errors/RepositoryError.js";
-import { AuthUserMapper } from "../../utils/AuthUserMapper.js";
+import { UserMapper } from "../../utils/UserMapper.js";
 
 export default class UserRepository {
   constructor(model) {
     this.model = model;
   }
 
-  findById(userId) {
-    return this.model.findById(userId).lean();
+  async findByUserId(userId) {
+    const document = await this.model.findOne({ userId }).lean();
+    return UserMapper.toDomain(document);
   }
 
-  create(user) {
-    return this.model.create(user);
+  async createUser(user) {
+    const created = await this.model.create(
+      UserMapper.toPersistence(user)
+    );
+
+    return UserMapper.toDomain(created.toObject());
   }
 
-  update(user) {
+  async updateUser(user) {
     try {
       if (!user.userId) {
         throw new Error("User must have a userId to be updated");
       }
 
-      const persistence = AuthUserMapper.toPersistence(user);
+      const persistence = UserMapper.toPersistence(user);
 
-      const updated = this.model
-        .findByIdAndUpdate(user.userId, persistence, { new: true })
+      const updated = await this.model
+        .findOneAndUpdate({ userId: user.userId }, persistence, { new: true })
         .lean();
 
       if (!updated) return null;
 
-      return AuthUserMapper.toDomain(updated);
+      return UserMapper.toDomain(updated);
     } catch (error) {
       throw new RepositoryError("Unexpected database error");
     }
   }
 
-  delete(userId) {
-    return this.model.findByIdAndDelete(userId);
+  async deleteUser(userId) {
+    const deleted = await this.model.findOneAndDelete({ userId }).lean();
+    return deleted ? UserMapper.toDomain(deleted) : null;
   }
 }

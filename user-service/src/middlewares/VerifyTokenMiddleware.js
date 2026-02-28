@@ -17,9 +17,10 @@ export const verifyTokenMiddleware = (tokenService) => {
 
             // 🔥 inyectamos usuario en request
             req.user = {
-                id: decoded.sub,
+                userId: decoded.sub,
                 email: decoded.email,
                 role: decoded.role,
+                providerId: decoded.providerId
             };
 
             next();
