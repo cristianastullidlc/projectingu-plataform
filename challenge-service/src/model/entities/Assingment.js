@@ -8,7 +8,6 @@ export default class Assignment {
     candidateId,
     status,
     deadline: deadlineOverride,
-    submissionId
   }) {
     this.id = id;
     this.challengeId = challengeId;
@@ -16,7 +15,6 @@ export default class Assignment {
     this.candidateId = candidateId;
     this.status = status || ASSIGNMENT_STATUS.ASSIGNED;
     this.deadlineOverride = deadlineOverride || null;
-    this.submissionId = submissionId || null;
   }
 
   start() {

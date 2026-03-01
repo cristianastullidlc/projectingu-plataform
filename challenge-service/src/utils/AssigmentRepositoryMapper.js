@@ -11,7 +11,6 @@ export default class AssignmentRepositoryMapper {
       candidateId: document.candidateId,
       status: document.status,
       deadlineOverride: document.deadlineOverride ?? null,
-      submissionId: document.submissionId?.toString() ?? null,
     });
   }
 
@@ -22,7 +21,6 @@ export default class AssignmentRepositoryMapper {
       candidateId: assignment.candidateId,
       status: assignment.status,
       deadlineOverride: assignment.deadlineOverride,
-      submissionId: assignment.submissionId
     };
   }
 }
