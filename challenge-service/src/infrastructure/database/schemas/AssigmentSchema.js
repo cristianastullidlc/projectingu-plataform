@@ -31,12 +31,6 @@ const AssigmentSchema = new mongoose.Schema({
         required: false,
         default: null
 
-    },
-    submissionId: 
-    { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Submission', 
-        required: false 
     }
 },
 {
