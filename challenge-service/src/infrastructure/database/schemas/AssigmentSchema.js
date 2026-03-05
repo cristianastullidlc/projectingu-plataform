@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { AssignmentStatus } from '../../models/enums/AssignmentStatus.js';
+import { AssigmentStatus } from '../../../model/enums/assigmentStatus.js';
 
 const AssigmentSchema = new mongoose.Schema({
     challengeId: 
@@ -21,7 +21,7 @@ const AssigmentSchema = new mongoose.Schema({
     },
     status: 
     { type: String, 
-        enum: Object.values(AssignmentStatus), 
+        enum: Object.values(AssigmentStatus), 
         default: 'assigned',
         required: true
     },

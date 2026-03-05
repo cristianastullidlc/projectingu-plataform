@@ -1,4 +1,8 @@
-import Assignment from "../model/entities/Assignment.js";
+import RedundancyCreationError from "../errors/RedundancyCreationError.js";
+import Assignment from "../model/entities/Assingment.js";
+import UnauthizedError from "../errors/UnauthorizedActionError.js";
+import ChallengeNotFoundError from "../errors/ChallengeNotFoundError.js";
+import InvalidCredentialsError from "../errors/InvalidCredentialsError.js";
 
 export default class AssignmentService {
 
@@ -10,28 +14,28 @@ export default class AssignmentService {
 
   async create(challengeId, candidateId, user, deadlineOverride) {
 
-    if (!challengeId) throw new Error("Challenge ID is required");
-    if (!candidateId) throw new Error("Candidate ID is required");
+    if (!challengeId) throw new InvalidCredentialsError("Challenge ID is required");
+    if (!candidateId) throw new InvalidCredentialsError("Candidate ID is required");
 
     if (!["ADMIN", "RECRUITER"].includes(user.role)) {
-      throw new Error("Not authorized to assign challenges");
+      throw new UnauthizedError();
     }
 
     const challenge = await this.challengeRepository.findById(challengeId);
 
     if (!challenge) {
-      throw new Error("Challenge not found");
+      throw new ChallengeNotFoundError();
     }
 
     if (user.role === "RECRUITER" && challenge.createdBy !== user.userId) {
-      throw new Error("Not authorized to assign this challenge");
+      throw new UnauthizedError();
     }
 
     const alreadyExists =
       await this.assignmentRepository.exists(candidateId, challengeId);
 
     if (alreadyExists) {
-      throw new Error("Assignment already exists for this candidate");
+      throw new RedundancyCreationError();
     }
 
     const assignment = new Assignment({
@@ -47,7 +51,7 @@ export default class AssignmentService {
 
   async findById(id, user) {
 
-    if (!id) throw new Error("ID is required");
+    if (!id) throw new InvalidCredentialsError("ID is required");
 
     const assignment = await this.assignmentRepository.findById(id);
 
@@ -61,18 +65,18 @@ export default class AssignmentService {
 
       case "RECRUITER":
         if (challenge.createdBy !== user.userId) {
-          throw new Error("Not authorized");
+          throw new UnauthizedError();
         }
         return assignment;
 
       case "CANDIDATE":
         if (assignment.candidateId !== user.userId) {
-          throw new Error("Not authorized");
+          throw new UnauthizedError();
         }
         return assignment;
 
       default:
-        throw new Error("Invalid role");
+        throw new UnauthizedError();
     }
   }
 
@@ -81,7 +85,7 @@ export default class AssignmentService {
   async findByChallengeId(challengeId, user) {
 
     if (!challengeId) {
-      throw new Error("Challenge ID is required");
+      throw new InvalidCredentialsError("Challenge ID is required");
     }
 
     const challenge =
@@ -89,11 +93,11 @@ export default class AssignmentService {
 
     if (user.role === "RECRUITER" &&
         challenge.createdBy !== user.userId) {
-      throw new Error("Not authorized");
+      throw new UnauthizedError();
     }
 
     if (user.role === "CANDIDATE") {
-      throw new Error("Candidates cannot view all assignments of a challenge");
+      throw new UnauthizedError();
     }
 
     return await this.assignmentRepository.findByChallenge(challengeId);
@@ -104,16 +108,16 @@ export default class AssignmentService {
   async findByCandidateId(candidateId, user) {
 
     if (!candidateId) {
-      throw new Error("Candidate ID is required");
+      throw new InvalidCredentialsError("Candidate ID is required");
     }
 
     if (user.role === "CANDIDATE" &&
         candidateId !== user.userId) {
-      throw new Error("Not authorized");
+      throw new UnauthizedError();
     }
 
     if (!["ADMIN", "RECRUITER", "CANDIDATE"].includes(user.role)) {
-      throw new Error("Invalid role");
+      throw new UnauthizedError();
     }
 
     return await this.assignmentRepository.findByCandidate(candidateId);
@@ -131,12 +135,12 @@ export default class AssignmentService {
 
     if (user.role === "CANDIDATE" &&
         assignment.candidateId !== user.userId) {
-      throw new Error("Not authorized");
+      throw new UnauthizedError();
     }
 
     if (user.role === "RECRUITER" &&
         challenge.createdBy !== user.userId) {
-      throw new Error("Not authorized");
+      throw new UnauthizedError();
     }
 
     switch (action) {
@@ -145,7 +149,7 @@ export default class AssignmentService {
         break;
 
       case "submit":
-        throw new Error("Submission must be created through SubmissionService");
+        throw new UnauthizedError();
 
       case "complete":
         assignment.markAsCompleted();
@@ -156,7 +160,7 @@ export default class AssignmentService {
         break;
 
       default:
-        throw new Error("Invalid action");
+        throw new UnauthizedError();
     }
 
     return await this.assignmentRepository.update(assignment);

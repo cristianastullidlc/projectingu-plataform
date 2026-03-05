@@ -1,8 +1,10 @@
 import ChallengeNotFoundError from "../errors/ChallengeNotFoundError.js";
+import InvalidCredentialsError from "../errors/InvalidCredentialsError.js";
+import RedundancyCreationError from "../errors/RedundancyCreationError.js";
+import {RepositoryError} from "..//errors/RespotirotyError.js";
 import UnauthorizedActionError from "../errors/UnauthorizedActionError.js";
-import {RepositoryError} from "../errors/RespotirotyError.js";
 
-export const ChallengeErrorMiddleware = (err, req, res, next) => {
+export const AssigmentErrorMiddleware = (err, req, res, next) => {
     console.error("Error in challenge routes:", err);
 
     if (err instanceof ChallengeNotFoundError) {
@@ -19,6 +21,10 @@ export const ChallengeErrorMiddleware = (err, req, res, next) => {
 
     if (err instanceof InvalidCredentialsError) {
         return res.status(401).json({ success: false, error: err.message });
+    }
+
+    if (err instanceof RedundancyCreationError) {
+        return res.status(409).json({ success: false, error: err.message });
     }
 
     res.status(500).json({ error: "Internal Server Error" });

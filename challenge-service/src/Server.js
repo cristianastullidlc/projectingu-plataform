@@ -1,3 +1,8 @@
+import {ChallengeErrorMiddleware} from "./middlewares/ChallengeErrorMiddleware.js";
+import express from 'express';
+import cors from 'cors';
+import {AssigmentErrorMiddleware} from "./middlewares/AssigmentErrorMiddleware.js";
+import {SubmissionErrorMiddleware} from "./middlewares/submissionErrorMiddleware.js";
 
 export class Server {
     constructor(port) {
@@ -53,7 +58,9 @@ export class Server {
             this._app.use(routeFactory(this.getController.bind(this)));
         });
 
-        this._app.use(challengeErrorMiddleware);
+        this._app.use(ChallengeErrorMiddleware);
+        this._app.use(AssigmentErrorMiddleware);
+        this._app.use(SubmissionErrorMiddleware);
     }
 
     launch() {

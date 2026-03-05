@@ -1,5 +1,8 @@
 import Submission from "../model/entities/Submission.js";
-import { ASSIGNMENT_STATUS } from "../enums/AssignmentStatus.js";
+import { SubmissionStatus } from "../model/enums/SubmissionStatus.js";
+import InvalidCredentialsError from "../errors/InvalidCredentialsError.js";
+import AssignmentNotFoundError from "../errors/AssigmentNotFound.js";
+import SubmissionNotFound from "../errors/SubmissionNotFound.js";
 
 export default class SubmissionService {
 
@@ -13,22 +16,22 @@ export default class SubmissionService {
     const assignment = await this.assignmentRepository.findById(assignmentId);
 
     if (!assignment) {
-      throw new Error("Assignment not found");
+      throw new AssignmentNotFoundError(assignmentId);
     }
 
     if (assignment.candidateId !== user.userId) {
-      throw new Error("Not authorized");
+      throw new InvalidCredentialsError("Not authorized");
     }
 
-    if (assignment.status !== ASSIGNMENT_STATUS.IN_PROGRESS) {
-      throw new Error("Assignment must be in progress");
+    if (assignment.status !== SubmissionStatus.IN_PROGRESS) {
+      throw new InvalidCredentialsError("Assignment must be in progress");
     }
 
     const exists =
       await this.submissionRepository.existsByAssignment(assignmentId);
 
     if (exists) {
-      throw new Error("Submission already exists for this assignment");
+      throw new InvalidCredentialsError("Submission already exists for this assignment");
     }
 
     const submission = new Submission({
@@ -56,12 +59,12 @@ export default class SubmissionService {
       await this.submissionRepository.findById(id);
 
     if (!submission) {
-      throw new Error("Submission not found");
+      throw new SubmissionNotFound(id);
     }
 
     if (user.role === "CANDIDATE" &&
         submission.candidateId !== user.userId) {
-      throw new Error("Not authorized");
+      throw new InvalidCredentialsError("Not authorized");
     }
 
     return submission;
@@ -73,12 +76,12 @@ export default class SubmissionService {
       await this.submissionRepository.findByAssignmentId(assignmentId);
 
     if (!submission) {
-      throw new Error("Submission not found");
+      throw new SubmissionNotFound(assignmentId);
     }
 
     if (user.role === "CANDIDATE" &&
         submission.candidateId !== user.userId) {
-      throw new Error("Not authorized");
+      throw new InvalidCredentialsError("Not authorized");
     }
 
     return submission;
@@ -94,7 +97,7 @@ export default class SubmissionService {
     await this.submissionRepository.findById(submissionId);
 
   if (!submission) {
-    throw new Error("Submission not found");
+    throw new SubmissionNotFound(submissionId);
   }
 
   const assignment =
@@ -111,7 +114,7 @@ export default class SubmissionService {
   }
 
   else {
-    throw new Error("Invalid evaluation decision");
+    throw new InvalidCredentialsError("Invalid evaluation decision");
   }
 
   await this.submissionRepository.update(submission);

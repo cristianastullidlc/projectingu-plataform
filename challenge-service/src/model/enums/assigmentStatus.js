@@ -1,4 +1,4 @@
-export const ASSIGNMENT_STATUS = {
+export const AssigmentStatus = {
   ASSIGNED: "assigned",
   IN_PROGRESS: "in_progress",
   SUBMITTED: "submitted",
