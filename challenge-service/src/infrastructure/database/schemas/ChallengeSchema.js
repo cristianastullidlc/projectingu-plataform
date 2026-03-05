@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { Difficulty } from "../../models/enums/Difficulty.js";
-import { Status } from "../../models/enums/Status.js";
+import { Difficulty } from "../../../model/enums/Difficulty.js";
+import { Status } from "../../../model/enums/Status.js";
 
 const ChallengeSchema = new mongoose.Schema({
     title: {

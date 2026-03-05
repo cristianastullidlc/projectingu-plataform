@@ -1,4 +1,4 @@
-export const SUBMISSION_STATUS = {
+export const SubmissionStatus = {
   DRAFT: "draft",
   SUBMITTED: "submitted",
   PASSED: "passed",

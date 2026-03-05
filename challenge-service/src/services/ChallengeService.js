@@ -1,6 +1,7 @@
 import { fa } from "zod/locales";
 import Challenge from "../model/entities/Challenge.js";
 
+
 export default class ChallengeService {
     constructor(repository, assignmentRepository) {
         this.repository = repository;

@@ -1,7 +1,7 @@
 // infrastructure/persistence/schemas/SubmissionSchema.js
 
 import mongoose from "mongoose";
-import { SUBMISSION_STATUS } from "../../../model/enums/SubmissionStatus.js";
+import { SubmissionStatus } from "../../../model/enums/SubmissionStatus.js";
 
 const SubmissionSchema = new mongoose.Schema(
   {
@@ -25,8 +25,8 @@ const SubmissionSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: Object.values(SUBMISSION_STATUS),
-      default: SUBMISSION_STATUS.DRAFT,
+      enum: Object.values(SubmissionStatus),
+      default: SubmissionStatus.DRAFT,
       required: true
     },
     score: {

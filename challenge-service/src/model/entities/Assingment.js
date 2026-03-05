@@ -1,4 +1,4 @@
-import { ASSIGNMENT_STATUS } from "../enums/assigmentStatus.js";
+import { AssigmentStatus } from "../enums/assigmentStatus.js";
 
 export default class Assignment {
   constructor({
@@ -13,20 +13,20 @@ export default class Assignment {
     this.challengeId = challengeId;
     this.assignedAt = assignedAt || new Date();
     this.candidateId = candidateId;
-    this.status = status || ASSIGNMENT_STATUS.ASSIGNED;
+    this.status = status || AssigmentStatus.ASSIGNED;
     this.deadlineOverride = deadlineOverride || null;
   }
 
   start() {
-    if (this.status !== ASSIGNMENT_STATUS.ASSIGNED) {
+    if (this.status !== AssigmentStatus.ASSIGNED) {
       throw new Error("Only assigned challenges can be started");
     }
 
-    this.status = ASSIGNMENT_STATUS.IN_PROGRESS;
+    this.status = AssigmentStatus.IN_PROGRESS;
   }
 
   markSubmitted(submissionId) {
-    if (this.status !== ASSIGNMENT_STATUS.IN_PROGRESS) {
+    if (this.status !== AssigmentStatus.IN_PROGRESS) {
       throw new Error("Only in-progress assignments can be submitted");
     }
 
@@ -35,41 +35,41 @@ export default class Assignment {
     }
 
     this.submissionId = submissionId;
-    this.status = ASSIGNMENT_STATUS.SUBMITTED;
+    this.status = AssigmentStatus.SUBMITTED;
   }
 
   markAsCompleted() {
-    if (this.status !== ASSIGNMENT_STATUS.SUBMITTED) {
+    if (this.status !== AssigmentStatus.SUBMITTED) {
       throw new Error("Only submitted assignments can be completed");
     }
 
-    this.status = ASSIGNMENT_STATUS.COMPLETED;
+    this.status = AssigmentStatus.COMPLETED;
   }
 
   markAsExpired() {
     if (
-      this.status === ASSIGNMENT_STATUS.COMPLETED ||
-      this.status === ASSIGNMENT_STATUS.EXPIRED
+      this.status === AssigmentStatus.COMPLETED ||
+      this.status === AssigmentStatus.EXPIRED
     ) {
       throw new Error("Assignment cannot be expired");
     }
 
-    this.status = ASSIGNMENT_STATUS.EXPIRED;
+    this.status = AssigmentStatus.EXPIRED;
   }
 
 
   isActive() {
     return [
-      ASSIGNMENT_STATUS.ASSIGNED,
-      ASSIGNMENT_STATUS.IN_PROGRESS,
-      ASSIGNMENT_STATUS.SUBMITTED
+      AssigmentStatus.ASSIGNED,
+      AssigmentStatus.IN_PROGRESS,
+      AssigmentStatus.SUBMITTED
     ].includes(this.status);
   }
 
   isFinished() {
     return [
-      ASSIGNMENT_STATUS.COMPLETED,
-      ASSIGNMENT_STATUS.EXPIRED
+      AssigmentStatus.COMPLETED,
+      AssigmentStatus.EXPIRED
     ].includes(this.status);
   }
 
